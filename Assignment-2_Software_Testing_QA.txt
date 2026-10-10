@@ -1,0 +1,1184 @@
+==========================================================================
+ASSIGNMENT-2: SOFTWARE TESTING AND QUALITY ASSURANCE (MCA 2nd YEAR)
+Course Code: MCA211D
+Topics: Static Testing, Reviews, Black-Box Techniques (EP, BVA, Decision
+        Table, State Transition), Data Testing, Test to Pass/Fail
+==========================================================================
+
+
+--------------------------------------------------------------------------
+Q1. A university has developed an Online Examination Management System in
+    which students can register for examinations, select subjects, make
+    payments, download admit cards, and view results. Develop a complete
+    testing strategy for the system by explaining how testing
+    fundamentals, testing types, static testing, dynamic testing,
+    verification, and validation would be applied at different stages of
+    development. Justify why each testing activity is required.
+--------------------------------------------------------------------------
+ANSWER:
+
+1. TESTING FUNDAMENTALS APPLIED (7 principles)
+   - Testing shows presence of defects: we plan to find defects, not prove
+     there are none.
+   - Exhaustive testing is impossible: we use risk-based selection (payment
+     and results are highest risk).
+   - Early testing: requirements and design are reviewed before coding.
+   - Defect clustering: payment and result-calculation modules are expected to
+     have most defects, so they get extra effort.
+   - Pesticide paradox: test cases are reviewed and updated every cycle.
+   - Testing is context dependent: an exam system needs strong security,
+     data accuracy and load testing (registration rush).
+   - Absence-of-errors fallacy: a bug-free system is useless if it doesn't
+     meet student/university needs, so validation is done.
+
+2. TESTING STRATEGY BY DEVELOPMENT STAGE
+
+   Stage 1: Requirements
+     - Static testing: review SRS for ambiguity (e.g., "fast payment"),
+       missing rules (last registration date, fee refund), conflicts.
+     - Verification: "Are we building the product right?" - check SRS against
+       university rules.
+     - Why: defects found here cost the least to fix.
+
+   Stage 2: Design
+     - Static testing: review architecture, database design, UI wireframes,
+       security design.
+     - Verification: design traces back to requirements (traceability matrix).
+     - Why: avoids rework in code and DB structure.
+
+   Stage 3: Coding
+     - Static testing: code reviews, walkthroughs, static analysis tools
+       (checking coding standards, unused variables, SQL injection patterns).
+     - Dynamic testing: unit testing by developers (fee calculation, grade
+       function, admit card generator).
+     - Why: finds logic and coding errors early.
+
+   Stage 4: Integration
+     - Dynamic testing: integration testing of Registration -> Subject
+       selection -> Payment gateway -> Admit card -> Result module.
+     - Why: interface and data-flow errors appear only when modules join.
+
+   Stage 5: System testing
+     - Functional testing: registration, subject selection, payment (success
+       / failure / duplicate), admit card download, result viewing.
+     - Non-functional testing:
+         * Performance/load: thousands of students registering simultaneously.
+         * Security: login, session handling, SQL injection, access control
+           (student cannot see another's result), payment security.
+         * Usability: ease of navigation, mobile friendliness.
+         * Compatibility: Chrome, Firefox, Edge, Android, iOS.
+         * Reliability/recovery: payment gateway failure, server crash.
+     - Black-box techniques: EP, BVA, decision table, state transition
+       (Registered -> Paid -> Admit Card Generated).
+     - Why: validates the whole system against requirements and quality
+       attributes.
+
+   Stage 6: Acceptance
+     - Validation: "Are we building the right product?" - university staff
+       and sample students perform UAT (alpha/beta).
+     - Why: confirms real-world needs are met.
+
+   Stage 7: Maintenance
+     - Regression testing after every change (e.g., fee structure change) and
+       confirmation (retesting) of fixes.
+     - Why: ensures new changes don't break existing features.
+
+3. VERIFICATION VS VALIDATION SUMMARY
+   Verification (static): reviews, inspections, walkthroughs, static analysis.
+   Validation (dynamic): executing code in unit, integration, system, UAT.
+
+4. ENTRY/EXIT CRITERIA AND REPORTING
+   Entry: approved SRS, stable build, test environment ready.
+   Exit: 100% critical test cases executed, no open Critical/Major defects,
+   95% overall pass rate, requirement coverage 100%.
+   Defects tracked in a tool with metrics reported weekly.
+
+
+--------------------------------------------------------------------------
+Q2. Consider an online banking application that allows users to log in,
+    transfer money, add beneficiaries, pay bills, and view transaction
+    history. Identify and analyze the possible defects that can be
+    detected through static testing before executing the application.
+    Explain how static testing can reduce the cost and effort of later
+    dynamic testing.
+--------------------------------------------------------------------------
+ANSWER:
+
+Static testing examines documents and code without executing the software
+(reviews, walkthroughs, inspections and static code analysis).
+
+DEFECTS DETECTABLE BY STATIC TESTING
+
+A. Requirement defects
+   - Ambiguity: "Transfers should be processed quickly" (no time given).
+   - Missing: daily transfer limit, minimum balance rule, OTP validity time,
+     what happens when the session expires mid-transfer.
+   - Contradiction: one section says OTP is required for all transfers; another
+     says only above Rs. 10,000.
+   - Untestable: "System should be very secure".
+   - Missing error messages for failed login/transfer.
+
+B. Design defects
+   - No account lock after repeated failed logins.
+   - Passwords stored without hashing.
+   - No transaction rollback design when debit succeeds but credit fails.
+   - Missing audit/log design; no session timeout design.
+
+C. Code defects (found by review or static analysis tools)
+   - SQL injection vulnerabilities (string concatenation in queries).
+   - Hard-coded passwords/keys.
+   - Unvalidated inputs (negative transfer amount, beneficiary account number).
+   - Unused variables, dead code, unreachable code.
+   - Possible null pointer or divide-by-zero.
+   - Resource leaks (DB connections not closed).
+   - Incorrect use of float for money instead of decimal.
+   - Missing exception handling in payment calls.
+   - Violation of coding standards.
+   - Race conditions in balance update (no locking).
+
+D. Document defects
+   - Inconsistent terminology (beneficiary vs payee).
+   - Missing traceability between requirements and test cases.
+   - Incomplete user manual or API specification mismatch.
+
+HOW STATIC TESTING REDUCES COST AND EFFORT
+1. Early detection: a defect found at requirement stage costs about 1 unit; in
+   coding 5-10 units; in system testing 20-50 units; in production 100+
+   units (cost-of-defect curve).
+2. Fewer defects reach dynamic testing, so fewer test runs fail, fewer
+   retests and regression cycles are needed.
+3. Finds defects that are difficult to find by running tests (security
+   weaknesses, dead code, standards violations).
+4. Reduces debugging time: a review pinpoints the defect location directly,
+   while dynamic testing only shows the failure.
+5. Improves test case quality: clear, testable requirements make test case
+   design easy and complete.
+6. Prevents defect multiplication: wrong requirements do not propagate into
+   design, code and test cases.
+7. Saves rework, delays and reputational/financial loss in banking.
+8. Spreads knowledge and improves developer discipline.
+
+Conclusion: static testing is cheap, early and effective, and complements
+(not replaces) dynamic testing.
+
+
+--------------------------------------------------------------------------
+Q3. A development team has submitted a module containing approximately
+    2,000 lines of code for review. The module follows inconsistent
+    naming conventions, contains duplicated logic, has inadequate
+    comments, and uses complex conditional statements. Design a formal
+    review process for this module. Include review participants,
+    preparation activities, review stages, defect classification, review
+    checklist, documentation, and follow-up activities.
+--------------------------------------------------------------------------
+ANSWER:
+
+A formal review (Fagan-style inspection) is a structured process with defined
+roles, entry/exit criteria and documented results.
+
+1. REVIEW PARTICIPANTS
+   - Moderator/Review leader : Plans, runs meeting, ensures process followed.
+   - Author                  : Developer who wrote the module; answers
+                               questions; does not defend.
+   - Reviewers/Inspectors (2-4): Senior developer, tester, designer/architect.
+   - Reader                  : Paraphrases the code in the meeting.
+   - Recorder/Scribe         : Logs all defects and decisions.
+   - Optional: QA representative, manager (as observer only).
+
+2. ENTRY CRITERIA
+   - Code compiles without errors, passes static analyser basic scan.
+   - Requirement/design documents and coding standards are available.
+   - Code split into manageable parts (2,000 LOC is too large for one
+     session; review at 200-400 LOC per hour, so split into 5-6 sessions).
+
+3. PLANNING AND KICK-OFF
+   - Moderator selects participants, schedules sessions (max 2 hrs each).
+   - Kick-off meeting: author explains purpose, structure and context of the
+     module; roles assigned; checklists distributed.
+
+4. INDIVIDUAL PREPARATION
+   - Each reviewer reads code independently using the checklist and notes
+     defects (rate: about 100-200 LOC/hr).
+   - Tools: static analysis (SonarQube, Checkstyle, PMD) to find duplication,
+     complexity and naming issues beforehand.
+   - Reviewers submit their findings to the moderator before the meeting.
+
+5. REVIEW MEETING (stages)
+   a) Opening: moderator confirms preparation was done.
+   b) Reader goes through code section by section.
+   c) Reviewers raise issues; recorder logs them. No solution discussion
+      during the meeting (just identify).
+   d) Defects classified and agreed.
+   e) Decision: Accept / Accept with minor changes / Re-review needed.
+
+6. DEFECT CLASSIFICATION
+   By severity:
+     - Major (functional error, security issue, logic fault)
+     - Minor (naming, comments, style)
+     - Suggestion/improvement
+   By type:
+     - Naming convention, duplication, complexity, comment, logic, performance,
+       security, error handling, standards violation.
+   For this module:
+     - Inconsistent naming   -> Minor / Standards
+     - Duplicated logic      -> Major / Maintainability (candidate for
+                                refactoring into functions)
+     - Inadequate comments   -> Minor / Documentation
+     - Complex conditionals  -> Major / Maintainability and risk of logic
+                                errors (check cyclomatic complexity > 10)
+
+7. REVIEW CHECKLIST (sample)
+   - Names meaningful and consistent (camelCase/PascalCase as per standard)?
+   - Functions short, single purpose?
+   - Duplicate code removed (DRY)?
+   - Conditionals simplified (nested if, switch, guard clauses)?
+   - Cyclomatic complexity within limit?
+   - Comments present for non-obvious logic and public methods?
+   - Error/exception handling present?
+   - Inputs validated?
+   - No hard-coded values or unused variables?
+   - Resources closed properly?
+   - Security issues (SQL injection, secrets)?
+   - Matches design and requirements?
+
+8. DOCUMENTATION
+   - Defect log (ID, location, description, type, severity, owner, status).
+   - Review report: module name, participants, time spent, LOC reviewed,
+     number of defects by severity, decision.
+   - Metrics: defects per KLOC, review effort (person-hours), review rate.
+
+9. REWORK AND FOLLOW-UP
+   - Author fixes all defects (refactor naming, extract duplicate logic into
+     functions, simplify conditions, add comments).
+   - Moderator verifies fixes (re-inspection if major defects > threshold).
+   - Defects marked closed in tracking tool.
+   - Exit criteria: all major defects fixed and verified; report signed off.
+   - Process improvement: analyse root causes, update coding guidelines,
+     arrange training on clean code.
+
+
+--------------------------------------------------------------------------
+Q4. Explain the difference between peer review and formal review using a
+    realistic software project. Assume that five developers are working
+    on a large E-Commerce Application. Design a peer-review procedure for
+    one critical module and explain how defects should be identified,
+    recorded, discussed, corrected, and re-verified.
+--------------------------------------------------------------------------
+ANSWER:
+
+DIFFERENCE (E-Commerce project with 5 developers)
+
++----------------+---------------------------+-----------------------------+
+| Basis          | Peer Review               | Formal Review (Inspection)  |
++----------------+---------------------------+-----------------------------+
+| Formality      | Informal / semi-formal    | Highly structured, defined  |
+|                |                           | process                     |
+| Participants   | Fellow developers (1-2)   | Moderator, author, reader,  |
+|                |                           | scribe, reviewers           |
+| Documentation  | Minimal (comments in pull | Complete reports, defect    |
+|                | request, checklists)      | logs, metrics               |
+| Entry/Exit     | Usually none              | Strictly defined            |
+| criteria       |                           |                             |
+| Preparation    | Little                    | Mandatory individual prep   |
+| Cost/effort    | Low                       | Higher                      |
+| Best for       | Everyday code changes     | Critical, high-risk items   |
+| Example        | Dev B checks Dev A's      | Formal inspection of the    |
+|                | product-search pull       | payment module with         |
+|                | request                   | moderator and report        |
++----------------+---------------------------+-----------------------------+
+
+PEER-REVIEW PROCEDURE FOR A CRITICAL MODULE: "Shopping Cart and Checkout"
+
+Team: Dev A (author), Dev B and Dev C (reviewers), Dev D, Dev E.
+
+1. Preparation by author
+   - Complete unit tests and self-review; run static analysis.
+   - Create a pull request (PR) with a description, linked requirement, and
+     changes (small, below 400 LOC).
+2. Reviewer assignment
+   - Two peers (B and C) are assigned; one must know the payment domain.
+3. Defect identification
+   - Reviewers read the code using a checklist (logic, validation, security,
+     error handling, performance, naming, tests).
+   - Check cart total calculation, discount, tax, stock check, concurrency
+     (two users buying last item), payment failure handling.
+4. Defect recording
+   - Comments are added inline in the PR / review tool and each is tagged
+     (Major/Minor/Suggestion). Major issues are also logged in the defect
+     tracker (ID, location, description, severity).
+5. Discussion
+   - 30-minute walkthrough meeting or online discussion for disputed points.
+   - Focus on the code and not the person. Decisions are recorded in the PR.
+6. Correction
+   - Dev A fixes defects in new commits and responds to each comment
+     (fixed / not an issue with reason).
+7. Re-verification
+   - Reviewers re-check all fixes; rerun unit/regression tests through CI
+     pipeline.
+   - Approve PR only when all major issues are closed and CI passes.
+8. Closure and metrics
+   - Merge code; record review time and defects found; use lessons learned
+     to update the checklist.
+
+
+--------------------------------------------------------------------------
+Q5. A software company has asked its development team to follow strict
+    coding standards and guidelines. Prepare a detailed coding-review
+    checklist containing at least 20 important criteria related to naming
+    conventions, code structure, error handling, security, performance,
+    maintainability, comments, exception handling, input validation, and
+    resource management. Explain why each criterion is important.
+--------------------------------------------------------------------------
+ANSWER:
+
+CODING REVIEW CHECKLIST (each item: criterion -> why it matters)
+
+NAMING CONVENTIONS
+ 1. Variables, methods and classes have meaningful names (e.g.,
+    totalAmount, not x).
+    -> Makes code self-explanatory and easier to read.
+ 2. Consistent naming style (camelCase for variables, PascalCase for classes,
+    UPPER_CASE for constants).
+    -> Consistency reduces confusion and errors.
+ 3. No misleading or abbreviated names.
+    -> Avoids misinterpretation during maintenance.
+
+CODE STRUCTURE
+ 4. Functions are short and have a single responsibility.
+    -> Easier testing, reuse and understanding.
+ 5. No duplicated code (DRY principle).
+    -> A bug fix in one place doesn't need to be repeated several times.
+ 6. Proper modularisation and separation of concerns (UI/business/data).
+    -> Easier changes and parallel development.
+ 7. Limited nesting and cyclomatic complexity (<= 10).
+    -> Complex code is error-prone and hard to test.
+ 8. No dead/unreachable code or unused variables/imports.
+    -> Reduces confusion and clutter.
+
+ERROR AND EXCEPTION HANDLING
+ 9. All risky operations (file, DB, network) are inside try-catch.
+    -> Prevents crashes and data loss.
+10. Specific exceptions are caught, not empty or generic catch blocks.
+    -> Allows correct recovery and easier debugging.
+11. Meaningful error messages and logging, without exposing sensitive data.
+    -> Helps support and avoids information leakage.
+12. Exceptions are not used for normal flow control.
+    -> Maintains performance and clarity.
+
+INPUT VALIDATION
+13. All external inputs (forms, APIs, files) are validated for type, length,
+    range and format.
+    -> Prevents invalid data, crashes and attacks.
+14. Validation done on both client and server side.
+    -> Client-side checks can be bypassed.
+
+SECURITY
+15. Parameterised queries / prepared statements are used.
+    -> Prevents SQL injection.
+16. No hard-coded passwords, keys or secrets; passwords hashed and salted.
+    -> Protects credentials if code or DB leaks.
+17. Output is encoded/escaped; authentication and authorisation checks exist.
+    -> Prevents XSS and unauthorised access.
+
+PERFORMANCE
+18. No unnecessary loops, repeated DB calls or heavy operations inside loops.
+    -> Reduces response time and server load.
+19. Efficient data structures and algorithms used.
+    -> Better scalability.
+
+RESOURCE MANAGEMENT
+20. Files, DB connections, streams and sockets are closed (finally /
+    try-with-resources).
+    -> Prevents memory/resource leaks.
+21. Memory allocated is released; large objects are not held unnecessarily.
+    -> Avoids memory exhaustion.
+
+COMMENTS AND DOCUMENTATION
+22. Comments explain "why" for complex logic; method headers describe purpose,
+    parameters, return values.
+    -> Helps future developers understand intent.
+23. Comments are up to date and not obvious/redundant.
+    -> Outdated comments mislead.
+
+MAINTAINABILITY
+24. No magic numbers; constants are used.
+    -> Easier changes and clarity.
+25. Code follows team formatting standard (indentation, line length).
+    -> Uniform readability.
+26. Unit tests exist for the code and pass.
+    -> Safe refactoring and early defect detection.
+27. Code matches requirements/design and uses version control properly.
+    -> Traceability and accountability.
+
+
+--------------------------------------------------------------------------
+Q6. A Student Result Management System accepts marks between 0 and 100 for
+    five subjects. The system calculates total marks, percentage, grade,
+    and pass/fail status. Design a comprehensive Equivalence Partitioning
+    strategy for testing this system. Identify valid and invalid
+    partitions, boundary-related partitions, representative test data,
+    expected results, and explain why your selected test cases are
+    sufficient.
+--------------------------------------------------------------------------
+ANSWER:
+
+ASSUMPTIONS (state clearly in the assignment)
+ - Marks per subject are integers 0 to 100.
+ - Total = sum of 5 subjects (max 500); Percentage = total / 5.
+ - Pass: marks >= 40 in each subject (assumed) and percentage >= 40.
+ - Grades: A+ >= 90, A 80-89, B 70-79, C 60-69, D 50-59, E 40-49, F < 40.
+
+A. INPUT PARTITIONS FOR EACH SUBJECT MARK
+
+ Valid partitions (V):
+   V1: 0 - 39    (fail range)
+   V2: 40 - 49   (grade E)
+   V3: 50 - 59   (grade D)
+   V4: 60 - 69   (grade C)
+   V5: 70 - 79   (grade B)
+   V6: 80 - 89   (grade A)
+   V7: 90 - 100  (grade A+)
+
+ Invalid partitions (I):
+   I1: marks < 0                (e.g., -1, -50)
+   I2: marks > 100              (e.g., 101, 500)
+   I3: non-numeric              (e.g., "abc", "@#")
+   I4: decimal values           (e.g., 45.5) if only integers allowed
+   I5: empty / null input
+   I6: special/blank spaces
+
+B. BOUNDARY-RELATED VALUES
+   -1, 0, 1, 39, 40, 41, 49, 50, 59, 60, 69, 70, 79, 80, 89, 90, 99, 100, 101
+
+C. TEST CASES (single-subject mark field)
+
+ TC | Partition | Input   | Expected result
+ ---|-----------|---------|--------------------------------------------
+ 1  | I1        | -5      | Error: "Marks must be between 0 and 100"
+ 2  | V1        | 25      | Accepted; subject marked Fail
+ 3  | V2        | 45      | Accepted; Pass, grade E
+ 4  | V3        | 55      | Accepted; grade D
+ 5  | V4        | 65      | Accepted; grade C
+ 6  | V5        | 75      | Accepted; grade B
+ 7  | V6        | 85      | Accepted; grade A
+ 8  | V7        | 95      | Accepted; grade A+
+ 9  | I2        | 105     | Error: "Marks must be between 0 and 100"
+ 10 | I3        | abc     | Error: "Enter numeric value"
+ 11 | I4        | 45.5    | Error or per rule (reject decimals)
+ 12 | I5        | (blank) | Error: "Marks required"
+
+D. TEST CASES FOR THE COMPLETE RESULT (5 subjects)
+
+ TC | Marks (S1..S5)         | Total | % | Grade | Result
+ ---|------------------------|-------|-----|-------|--------------------
+ 13 | 95, 92, 98, 91, 94     | 470   | 94  | A+    | Pass
+ 14 | 85, 80, 82, 88, 84     | 419   | 83.8| A     | Pass
+ 15 | 45, 50, 42, 48, 40     | 225   | 45  | E     | Pass
+ 16 | 0, 0, 0, 0, 0          | 0     | 0   | F     | Fail
+ 17 | 100, 100, 100, 100, 100| 500   | 100 | A+    | Pass
+ 18 | 80, 90, 85, 39, 88     | 382   | 76.4| -     | Fail (one subject < 40)
+ 19 | 40, 40, 40, 40, 40     | 200   | 40  | E     | Pass (boundary)
+ 20 | 39, 39, 39, 39, 39     | 195   | 39  | F     | Fail
+ 21 | 50, 101, 60, 70, 80    | -     | -   | -     | Error for subject 2,
+                                                    no result
+ 22 | one blank subject      | -     | -   | -     | Error: marks required
+
+E. WHY THE TEST SET IS SUFFICIENT
+ - Every valid and invalid class is covered at least once (EP coverage = 100%).
+ - Values at class edges (BVA) catch off-by-one errors in grade and pass
+   conditions.
+ - Calculations (total, percentage) are checked at the minimum (0), maximum
+   (100) and typical values.
+ - Business rules (fail in any one subject) are tested with mixed marks.
+ - Because the system treats every value in a partition identically, one
+   representative per partition gives the same defect detection as testing
+   all 101 values, which reduces about 101^5 combinations to a small suite.
+
+
+--------------------------------------------------------------------------
+Q7. An online shopping application provides the following discount
+    rules:
+      Purchase below Rs. 1,000        -> No discount
+      Rs. 1,000 - Rs. 4,999           -> 5% discount
+      Rs. 5,000 - Rs. 9,999           -> 10% discount
+      Rs. 10,000 - Rs. 49,999         -> 15% discount
+      Rs. 50,000 or above             -> 20% discount
+    Design an extensive set of test cases using Equivalence Partitioning
+    and Boundary Value Analysis. Identify potential defects that could
+    occur at boundary values and explain how your test cases would
+    expose them.
+--------------------------------------------------------------------------
+ANSWER:
+
+A. EQUIVALENCE PARTITIONS (purchase amount)
+   Invalid: P0a: negative (< 0), P0b: non-numeric, P0c: blank
+   Valid:
+     P1: 0 - 999    (0% discount)
+     P2: 1,000 - 4,999   (5%)
+     P3: 5,000 - 9,999   (10%)
+     P4: 10,000 - 49,999 (15%)
+     P5: 50,000 and above (20%)
+
+B. EP TEST CASES
+ TC | Partition | Amount   | Expected discount | Final amount
+ ---|-----------|----------|-------------------|-------------
+ 1  | P0a       | -100     | Error             | -
+ 2  | P0b       | "abc"    | Error             | -
+ 3  | P0c       | blank    | Error             | -
+ 4  | P1        | 500      | 0%                | 500
+ 5  | P2        | 3,000    | 5%  (150)         | 2,850
+ 6  | P3        | 7,500    | 10% (750)         | 6,750
+ 7  | P4        | 25,000   | 15% (3,750)       | 21,250
+ 8  | P5        | 75,000   | 20% (15,000)      | 60,000
+
+C. BVA TEST CASES (values around each boundary)
+ TC | Amount   | Expected discount | Boundary tested
+ ---|----------|-------------------|------------------------
+ 9  | 0        | 0% (or error if 0 not allowed) | lower limit
+ 10 | 1        | 0%                | min + 1
+ 11 | 999      | 0%                | just below 1,000
+ 12 | 999.99   | 0%                | decimal below boundary
+ 13 | 1,000    | 5%                | boundary
+ 14 | 1,001    | 5%                | just above
+ 15 | 4,999    | 5%                | upper limit of slab 2
+ 16 | 4,999.50 | 5% (gap value - requirement unclear, raise
+                  defect/clarification)   | gap between 4,999 and 5,000
+ 17 | 5,000    | 10%               | boundary
+ 18 | 5,001    | 10%               | just above
+ 19 | 9,999    | 10%               | upper limit slab 3
+ 20 | 10,000   | 15%               | boundary
+ 21 | 10,001   | 15%               |
+ 22 | 49,999   | 15%               | upper limit slab 4
+ 23 | 50,000   | 20%               | boundary
+ 24 | 50,001   | 20%               |
+ 25 | 9,99,99,999 (very large) | 20%, no overflow | extreme value
+
+D. POTENTIAL BOUNDARY DEFECTS AND HOW TESTS EXPOSE THEM
+ 1. Wrong relational operator: code uses amount > 1000 instead of >= 1000.
+    Test 13 (1,000 gets 0% instead of 5%) exposes it. Same for 5,000,
+    10,000 and 50,000 (tests 17, 20, 23).
+ 2. Using >= 999 or > 999 by mistake: Test 11 (999) shows discount wrongly
+    applied.
+ 3. Off-by-one in upper limits: using <= 4999 vs < 4999. Test 15 (4,999)
+    shows 10% or 0% instead of 5%.
+ 4. Decimal gap: amounts like 4,999.50 or 9,999.99 may fall in no slab or
+    the wrong one (tests 12 and 16).
+ 5. Overlapping/missing slab logic: nested if-else with wrong order gives
+    the highest discount for all values; tests 4-8 reveal it.
+ 6. Data type problems: integer overflow or float rounding (discount on
+    1,001 giving 50.05); extreme values (test 25) expose these.
+ 7. Negative/zero amount accepted: tests 1 and 9.
+ 8. Rounding errors in discount calculation: check exact computed results.
+ 9. Discount applied twice or on wrong base: verify final amount values.
+
+
+--------------------------------------------------------------------------
+Q8. Explain Test to Pass and Test to Fail using a realistic ATM
+    withdrawal system. Design separate test scenarios for both
+    approaches. Your answer must include normal conditions, invalid
+    inputs, boundary conditions, insufficient balance, invalid PIN,
+    blocked card, network failure, and transaction timeout situations.
+--------------------------------------------------------------------------
+ANSWER:
+
+TEST TO PASS (positive testing): verifies that the software works correctly
+with valid inputs under normal conditions. Goal: show that the basic
+functionality works.
+
+TEST TO FAIL (negative testing): deliberately tries to break the software with
+invalid data, extreme conditions and error situations. Goal: find defects
+and check that the system handles failures gracefully.
+
+ASSUMED ATM RULES: PIN 4 digits, 3 wrong PIN attempts block the card, min
+withdrawal Rs. 100 in multiples of 100, max Rs. 20,000 per transaction, daily
+limit Rs. 50,000, timeout 60 seconds of inactivity.
+
+A. TEST TO PASS SCENARIOS
+ TC | Scenario                       | Input / Condition        | Expected
+ ---|--------------------------------|--------------------------|----------
+ P1 | Normal withdrawal              | Valid card, PIN, Rs.2,000, balance 10,000 | Cash dispensed, balance 8,000, receipt printed
+ P2 | Minimum amount                 | Rs. 100                  | Cash dispensed
+ P3 | Maximum per transaction (boundary)| Rs. 20,000, balance enough | Cash dispensed
+ P4 | Balance exactly equals amount  | Balance 5,000, withdraw 5,000 | Success, balance 0 (if no min balance rule)
+ P5 | Multiple valid transactions    | 2 withdrawals within daily limit | Both succeed
+ P6 | Cancel transaction             | Press Cancel after PIN   | Card returned, no debit
+ P7 | Print receipt / SMS alert      | After success            | Receipt and SMS generated
+
+B. TEST TO FAIL SCENARIOS
+ TC | Scenario                       | Input / Condition        | Expected
+ ---|--------------------------------|--------------------------|----------
+ F1 | Invalid PIN                    | Wrong PIN once           | Error message, retry allowed
+ F2 | 3 consecutive wrong PINs       | 3 wrong attempts         | Card blocked/retained, message shown
+ F3 | Blocked card                   | Insert already blocked card | Transaction refused, message to contact bank
+ F4 | Expired / damaged / invalid card | Expired card           | Card rejected
+ F5 | Insufficient balance           | Balance 1,000, request 2,000 | "Insufficient funds", no debit
+ F6 | Amount not in multiples of 100 | 150, 275                 | Error message
+ F7 | Boundary: below minimum        | Rs. 99, 0                | Rejected
+ F8 | Boundary: above max            | Rs. 20,100, 20,001       | "Exceeds limit", rejected
+ F9 | Daily limit exceeded           | Third Rs. 20,000 withdrawal (total > 50,000) | Rejected
+ F10| Negative amount / non-numeric  | -500, "abc", blank       | Rejected
+ F11| Network failure during request | Disconnect before bank response | Transaction cancelled, no debit, card returned
+ F12| Network failure after debit, before dispensing | Disconnect | Auto-reversal; amount credited back, record logged
+ F13| Transaction timeout            | No input for 60 seconds on amount screen | Session ends, card returned/retained safely, no debit
+ F14| Cash dispenser failure / out of cash | ATM has no notes   | Error message, no debit or auto reversal
+ F15| Power failure / card removed during transaction | Remove card | Transaction aborted safely
+ F16| Press keys rapidly / double click Enter | Repeated input  | Only one transaction processed
+ F17| Account frozen / closed        | Withdraw                 | Refused
+
+C. WHY BOTH ARE NEEDED
+ - Test to pass confirms the system meets requirements in normal use.
+ - Test to fail finds hidden defects in error handling, security and
+   robustness; for a banking system, wrongly debited money or not blocking a
+   stolen card are serious defects.
+
+
+--------------------------------------------------------------------------
+Q9. A hospital appointment system allows patients to enter their age,
+    select a doctor, choose an appointment date, and make an online
+    payment. Design a complete Data Testing strategy for this
+    application. Include valid data, invalid data, boundary data,
+    missing data, incorrect data types, duplicate data, inconsistent
+    data, extreme values, and malicious/unexpected input.
+--------------------------------------------------------------------------
+ANSWER:
+
+Data testing checks how the system accepts, processes, stores and displays
+different kinds of data.
+
+ASSUMPTIONS: Age 0-120; appointment must be a future date within 30 days;
+doctor works on specific days; one patient cannot book two appointments with
+the same doctor at the same time; payment by card/UPI.
+
+ Category            | Test data / scenario                        | Expected result
+ --------------------|----------------------------------------------|----------------------
+ 1. Valid data       | Age 35, Dr. Sharma (available), date = tomorrow, valid card | Appointment booked, payment success, confirmation sent
+ 2. Invalid data     | Age -5, 150; date in the past; unavailable doctor (on leave); invalid card number/CVV | Error messages; no booking
+ 3. Boundary data    | Age 0, 1, 119, 120, 121; date today, tomorrow, day 30, day 31; appointment time first/last slot of day; amount Re.1, max limit | Valid at limits accepted; just outside rejected
+ 4. Missing data     | Age blank; no doctor selected; date blank; payment details empty | "Required field" messages
+ 5. Incorrect data types | Age = "twenty", 25.5, "@#"; date = "32/13/2026", "abc"; payment amount text | Rejected with proper error; no crash
+ 6. Duplicate data   | Same patient books the same doctor/slot twice; double click on Pay; same transaction ID repeated; same slot booked by two patients | Duplicate blocked; only one booking and one payment; slot conflict message
+ 7. Inconsistent data| Child age 4 selecting a geriatric specialist; date outside doctor's working day; patient age not matching DOB; payment amount differs from doctor fee; Feb 30 | Validation error or warning; correct fee enforced
+ 8. Extreme values   | Very long name (5,000 chars); age 99999999999; very large number of appointments; far future date (year 9999); booking at 11:59 PM; many users booking simultaneously | Graceful handling, length limits, no crash/overflow
+ 9. Malicious / unexpected input | SQL injection ('; DROP TABLE patients;--), XSS (<script>alert(1)</script>), HTML tags, special characters (emoji, unicode), script in name field, tampered request (change fee in request parameters), URL manipulation to view others' appointments, spaces only, leading zeros | Input sanitised/rejected; no data leak or change; access denied
+
+ Additional data-related checks:
+ - Data storage: booked data saved correctly in DB (age, doctor ID, date,
+   payment status).
+ - Data display: confirmation page and SMS show correct information.
+ - Data integrity on failure: if payment fails, appointment must not be
+   confirmed (or the slot is released); if payment is deducted but booking
+   fails, refund/rollback.
+ - Time zone/date format (DD/MM/YYYY vs MM/DD/YYYY) handling.
+ - Data privacy: patient data encrypted and masked (card number).
+ - Cancel/reschedule updates the data correctly.
+
+
+--------------------------------------------------------------------------
+Q10. Consider a bank account application having the following states:
+       New Account -> Active -> Suspended -> Active -> Closed
+     An account can become suspended after suspicious activity and can be
+     permanently closed after specific conditions are satisfied. Develop
+     a State Transition Testing model for the application. Identify valid
+     and invalid transitions and prepare detailed test cases for each
+     important transition.
+--------------------------------------------------------------------------
+ANSWER:
+
+STATES: New (N), Active (A), Suspended (S), Closed (C)
+
+EVENTS:
+  e1 = KYC verified / initial deposit made
+  e2 = suspicious activity detected
+  e3 = review cleared / customer verified
+  e4 = closure request with conditions met (zero balance, no dues,
+       no pending transactions) or bank closes account
+  e5 = other transaction/withdrawal request (used in invalid cases)
+
+STATE TRANSITION DIAGRAM:
+
+                 e1                 e2
+    [New] ------------> [Active] ------------> [Suspended]
+                         ^   |                      |
+                         |   | e4                   | e3
+                         |   v                      |
+                      [Closed]  <---- e4 (closure) -+
+                         ^                          |
+                         +--------------------------+
+                         (Active -> Suspended -> Active possible via e3)
+
+VALID TRANSITIONS
+ T1: New -> Active       (e1: KYC done, initial deposit)
+ T2: Active -> Suspended (e2: suspicious activity)
+ T3: Suspended -> Active (e3: review cleared)
+ T4: Active -> Closed    (e4: all closing conditions satisfied)
+ T5: Suspended -> Closed (e4: bank closes after fraud confirmation; optional,
+                          depends on rules)
+ T6: New -> Closed       (cancellation before activation; optional)
+
+STATE TABLE
+ Current state | e1 (activate) | e2 (suspicious) | e3 (clear) | e4 (close)
+ --------------|---------------|-----------------|------------|-----------
+ New           | Active        | Invalid         | Invalid    | Closed (opt.)
+ Active        | Invalid       | Suspended       | Invalid    | Closed
+ Suspended     | Invalid       | Invalid (stay)  | Active     | Closed (opt.)
+ Closed        | Invalid       | Invalid         | Invalid    | Invalid
+
+INVALID TRANSITIONS (must be rejected)
+ I1: New -> Suspended (cannot suspend a not-yet-active account)
+ I2: Closed -> Active (reopening needs a new account)
+ I3: Closed -> Suspended
+ I4: Closed -> New
+ I5: Active -> New
+ I6: Suspended -> New
+ I7: Suspended -> Suspended (repeat suspension - no change/ignored)
+ I8: Active -> Closed when conditions are not met (balance > 0, pending loan)
+
+DETAILED TEST CASES
+ TC  | Start state | Event / action                         | Expected result
+ ----|-------------|-----------------------------------------|---------------------
+ 1   | New         | Complete KYC and deposit Rs. 1,000      | State = Active; debit card/netbanking enabled
+ 2   | New         | Attempt deposit without KYC             | Remains New; message "KYC pending"
+ 3   | New         | Try to suspend the account (e2)         | Rejected (invalid); state stays New
+ 4   | Active      | Normal withdrawal/transfer              | Allowed; state stays Active
+ 5   | Active      | Suspicious activity flagged (e.g., 10 big transfers within minutes) | State = Suspended; alert sent to customer
+ 6   | Suspended   | Attempt withdrawal/transfer             | Blocked; message "Account suspended"
+ 7   | Suspended   | Deposit credit (if allowed by rule)     | Per rules (typically allowed); verify
+ 8   | Suspended   | Customer verification passes (e3)       | State = Active; operations restored
+ 9   | Suspended   | Review fails / fraud confirmed          | Remains Suspended or goes to Closed per rule
+ 10  | Suspended   | Another suspicious event                | Remains Suspended (no duplicate record/error)
+ 11  | Active      | Closure request with balance 0, no dues | State = Closed; confirmation sent
+ 12  | Active      | Closure request with balance Rs. 500    | Rejected: "Withdraw balance before closing" (or payout then close); stays Active
+ 13  | Active      | Closure with pending loan/cheque        | Rejected; stays Active
+ 14  | Closed      | Try to login/transfer/deposit           | Rejected; state remains Closed
+ 15  | Closed      | Try to reactivate                       | Rejected; must open new account
+ 16  | Active      | Active -> Suspended -> Active -> Suspended (repeat cycle 3 times) | Each transition correct; history logged
+ 17  | Active      | Suspended and closed without delay: Active -> Suspended -> Closed | Allowed per T5 if defined
+ 18  | Any         | Concurrent events: suspend and withdraw at the same time | Withdrawal blocked/consistent state
+ 19  | Any         | System failure during transition (power cut) | State must be consistent (either old or new), no half state
+ 20  | Any         | Audit check                            | Every transition is logged with date, user, reason
+
+COVERAGE: All valid transitions (0-switch), pairs of transitions (1-switch),
+and all invalid state/event combinations in the state table.
+
+
+--------------------------------------------------------------------------
+Q11. A Food Delivery Application has the following order states:
+       Order Placed -> Payment Confirmed -> Restaurant Accepted -> Food
+       Preparing -> Out for Delivery -> Delivered
+     The order may also enter Cancelled, Payment Failed, or Refund
+     Initiated. Design a complete state-based testing strategy for this
+     application. Include valid transitions, invalid transitions,
+     unexpected events, repeated events, and recovery scenarios.
+--------------------------------------------------------------------------
+ANSWER:
+
+STATES: Order Placed (OP), Payment Confirmed (PC), Payment Failed (PF),
+Restaurant Accepted (RA), Food Preparing (FP), Out for Delivery (OD),
+Delivered (D), Cancelled (CN), Refund Initiated (RI).
+
+MAIN FLOW:
+ OP -> PC -> RA -> FP -> OD -> D
+
+ALTERNATE FLOWS:
+ OP -> PF (payment fails) -> OP (retry payment) or -> CN
+ OP/PC/RA -> CN (customer cancels or restaurant rejects)
+ PC/RA/FP -> CN -> RI (paid orders cancelled get refund)
+ OD -> CN (rare: delivery failed) -> RI (partial/full refund)
+ D -> RI (post-delivery refund for wrong/missing items)
+ RI -> (refund completed)
+
+A. VALID TRANSITIONS (test each)
+ V1 OP -> PC          (payment successful)
+ V2 OP -> PF          (payment fails)
+ V3 PF -> OP          (retry)
+ V4 PF -> CN          (give up)
+ V5 PC -> RA          (restaurant accepts)
+ V6 PC -> CN -> RI    (restaurant rejects or customer cancels; refund)
+ V7 RA -> FP          (preparation starts)
+ V8 RA -> CN -> RI    (cancel before prep, per policy)
+ V9 FP -> OD          (picked up by delivery partner)
+ V10 FP -> CN -> RI   (restaurant cannot prepare; cancel fee rules)
+ V11 OD -> D          (delivered, OTP verified)
+ V12 OD -> CN -> RI   (customer unreachable/address problem)
+ V13 D -> RI          (complaint: wrong/missing item)
+
+B. INVALID TRANSITIONS (must be rejected)
+ I1 OP -> RA (skip payment)
+ I2 OP -> FP, OP -> OD, OP -> D (skipping states)
+ I3 PC -> D (delivered without accepted/prepared)
+ I4 D -> OD, D -> FP, D -> OP (going backwards)
+ I5 D -> CN (cannot cancel a delivered order; only refund request)
+ I6 CN -> any active state (cancelled order cannot be revived)
+ I7 PF -> RA/FP/OD/D (payment failed but order progressed)
+ I8 RI -> RA / FP / OD (refunded order cannot be processed)
+ I9 OD -> FP (backwards)
+
+C. UNEXPECTED EVENTS
+ U1 Customer cancels exactly when the restaurant accepts (race condition) -
+    only one outcome; state consistent.
+ U2 Payment confirmed after the order has already been cancelled/timed out
+    -> automatic refund.
+ U3 Restaurant app goes offline after payment -> auto-cancel after timeout
+    and refund.
+ U4 Delivery partner cancels/vehicle breakdown -> reassign to another
+    partner, state stays OD.
+ U5 Payment gateway timeout (money deducted, status unknown) ->
+    reconcile; do not mark Failed blindly.
+ U6 App crash or network loss during any state -> state recovered when app
+    restarts.
+ U7 Wrong order status update from restaurant (e.g., mark Delivered by
+    mistake) -> rejected/validated.
+ U8 Item out of stock after acceptance -> partial cancel/refund.
+
+D. REPEATED EVENTS
+ R1 Double click on "Pay" -> only one payment.
+ R2 Restaurant presses "Accept" twice -> state changes once.
+ R3 Customer presses "Cancel" repeatedly -> one cancellation and one refund.
+ R4 "Delivered" button pressed twice by rider -> one record.
+ R5 Duplicate payment callback from gateway -> idempotent handling.
+ R6 Refund request submitted multiple times -> only one refund.
+
+E. RECOVERY SCENARIOS
+ Rec1 Payment fails -> user retries with different method -> proceeds to PC.
+ Rec2 Refund fails -> automatic retry, escalate to support, status shows
+      "Refund Initiated" until credited.
+ Rec3 Restaurant rejects -> user informed and refunded instantly or offered
+      another restaurant.
+ Rec4 Rider unavailable -> reassign rider; send customer a delay notification.
+ Rec5 Server crash during transition -> on restart, order is in last
+      consistent state (no lost/duplicate orders).
+ Rec6 Offline customer -> status restored via order history on reconnect.
+
+F. SAMPLE TEST CASES
+ TC | Start | Event                         | Expected
+ ---|-------|-------------------------------|-----------------------------
+ 1  | OP    | Payment success               | PC; notification sent
+ 2  | OP    | Card declined                 | PF; options to retry
+ 3  | PF    | Retry with UPI success        | PC
+ 4  | PC    | Restaurant accepts            | RA
+ 5  | RA    | Start cooking                 | FP
+ 6  | FP    | Rider picks up                | OD with live tracking
+ 7  | OD    | Customer gives correct OTP    | D
+ 8  | PC    | Customer cancels              | CN then RI; full refund
+ 9  | D     | Customer cancels              | Rejected
+ 10 | CN    | Restaurant tries to accept    | Rejected
+ 11 | OP    | Skip to Delivered via API     | Rejected, error logged
+ 12 | FP    | Duplicate "Out for delivery"  | Single transition
+ 13 | OD    | Network drop and reconnect    | State preserved
+
+COVERAGE: all states, all valid transitions, every invalid cell in the
+state-event table, and key transition sequences (e.g., OP->PC->CN->RI).
+
+
+--------------------------------------------------------------------------
+Q12. Explain how Decision Table Testing can be applied to an insurance
+     claim processing system. Assume that claim approval depends on
+     policy validity, premium payment status, accident coverage,
+     document availability, and claim amount. Construct a suitable
+     decision table and derive test cases from it.
+--------------------------------------------------------------------------
+ANSWER:
+
+Decision table testing is a black-box technique used when the output depends
+on combinations of conditions (business rules). Conditions are listed in
+rows, each column is a rule, and the bottom rows show the action.
+
+CONDITIONS
+ C1: Policy valid? (Y/N)
+ C2: Premium paid up to date? (Y/N)
+ C3: Accident covered by policy? (Y/N)
+ C4: All documents available? (Y/N)
+ C5: Claim amount within the sum insured limit? (Y/N)
+
+ACTIONS
+ A1: Approve claim
+ A2: Reject claim
+ A3: Request more documents (pending)
+ A4: Send for manual review (amount exceeds limit)
+
+BUSINESS RULES (assumed)
+ - If policy invalid, premium unpaid or accident not covered -> Reject.
+ - If all above are fine but documents missing -> Request documents.
+ - If all fine, documents complete, amount within limit -> Approve.
+ - If all fine, documents complete, amount above limit -> Manual review
+   (approve only up to limit).
+
+DECISION TABLE (reduced; "-" means don't care)
+
+ Rule          | R1 | R2 | R3 | R4 | R5 | R6
+ --------------|----|----|----|----|----|----
+ C1 Policy valid|  N |  Y |  Y |  Y |  Y |  Y
+ C2 Premium paid|  - |  N |  Y |  Y |  Y |  Y
+ C3 Covered     |  - |  - |  N |  Y |  Y |  Y
+ C4 Documents   |  - |  - |  - |  N |  Y |  Y
+ C5 Amount OK   |  - |  - |  - |  - |  Y |  N
+ --------------|----|----|----|----|----|----
+ A1 Approve     |    |    |    |    |  X |
+ A2 Reject      |  X |  X |  X |    |    |
+ A3 Req. docs   |    |    |    |  X |    |
+ A4 Manual review|   |    |    |    |    |  X
+
+Full table would have 2^5 = 32 combinations; "don't care" collapses them to
+6 rules.
+
+TEST CASES DERIVED
+ TC | Policy | Premium | Covered | Docs | Amount      | Expected
+ ---|--------|---------|---------|------|-------------|---------------------
+ 1  | Expired| Paid    | Yes     | Yes  | Within      | Reject (R1)
+ 2  | Valid  | Unpaid  | Yes     | Yes  | Within      | Reject (R2)
+ 3  | Valid  | Paid    | No      | Yes  | Within      | Reject (R3)
+ 4  | Valid  | Paid    | Yes     | No   | Within      | Request documents (R4)
+ 5  | Valid  | Paid    | Yes     | Yes  | Within limit| Approve (R5)
+ 6  | Valid  | Paid    | Yes     | Yes  | Above limit | Manual review (R6)
+ Additional (to check don't-care assumptions and boundaries):
+ 7  | Expired| Unpaid  | No      | No   | Above       | Reject (multiple failures)
+ 8  | Valid  | Paid    | Yes     | Yes  | Exactly at limit | Approve (boundary)
+ 9  | Valid  | Paid    | Yes     | Yes  | Limit + 1   | Manual review (boundary)
+ 10 | Valid on date of accident but expires next day | Paid | Yes | Yes | Within | Approve (date-related check)
+
+Benefits: covers all business rules systematically, finds missing or
+contradicting rules, and keeps the test suite small.
+
+
+--------------------------------------------------------------------------
+Q13. A login system has the following rules:
+       - Username must be registered.
+       - Password must be correct.
+       - Account must be active.
+       - Account must not be locked.
+       - CAPTCHA must be successfully verified.
+     Analyze this system using Decision Table Testing. Construct the
+     decision table, identify all meaningful combinations of conditions,
+     and derive a minimum but effective set of test cases.
+--------------------------------------------------------------------------
+ANSWER:
+
+CONDITIONS
+ C1: Username registered (Y/N)
+ C2: Password correct (Y/N)
+ C3: Account active (Y/N)
+ C4: Account not locked (Y/N)
+ C5: CAPTCHA verified (Y/N)
+
+ACTIONS
+ A1: Login success (dashboard)
+ A2: Error "Invalid username or password"
+ A3: Error "Account inactive"
+ A4: Error "Account locked"
+ A5: Error "Invalid CAPTCHA"
+
+Full combinations = 2^5 = 32. Dependencies reduce them: if the username is not
+registered, the other account conditions (active/locked) do not exist, so
+they are don't-care. Assumed order of checking: CAPTCHA -> username ->
+password -> active -> locked (state this in the answer).
+
+REDUCED DECISION TABLE
+
+ Rule             | R1 | R2 | R3 | R4 | R5 | R6
+ -----------------|----|----|----|----|----|----
+ C5 CAPTCHA valid |  N |  Y |  Y |  Y |  Y |  Y
+ C1 User registered|  - |  N |  Y |  Y |  Y |  Y
+ C2 Password right|  - |  - |  N |  Y |  Y |  Y
+ C3 Account active|  - |  - |  - |  N |  Y |  Y
+ C4 Not locked    |  - |  - |  - |  - |  N |  Y
+ -----------------|----|----|----|----|----|----
+ A1 Success       |    |    |    |    |    |  X
+ A2 Invalid cred. |    |  X |  X |    |    |
+ A3 Inactive      |    |    |    |  X |    |
+ A4 Locked        |    |    |    |    |  X |
+ A5 CAPTCHA error |  X |    |    |    |    |
+
+MEANINGFUL COMBINATIONS (selected)
+ - All conditions true -> success (only 1 of 32 combinations).
+ - Exactly one condition false at a time (5 cases) to test each rule
+   independently.
+ - A few multiple-failure cases to check the priority of error messages
+   (e.g., wrong password and locked account).
+
+MINIMUM EFFECTIVE TEST SET
+ TC | User  | Password | Active | Locked | CAPTCHA | Expected
+ ---|-------|----------|--------|--------|---------|------------------------
+ 1  | Valid | Correct  | Yes    | No     | Valid   | Login success (R6)
+ 2  | Valid | Correct  | Yes    | No     | Invalid | CAPTCHA error (R1)
+ 3  | Unregistered | Any | -     | -      | Valid   | Invalid username/password (R2)
+ 4  | Valid | Wrong    | Yes    | No     | Valid   | Invalid username/password (R3)
+ 5  | Valid | Correct  | No     | No     | Valid   | Account inactive (R4)
+ 6  | Valid | Correct  | Yes    | Yes    | Valid   | Account locked (R5)
+ 7  | Valid | Wrong    | Yes    | Yes    | Valid   | Locked / invalid message per priority (check no info leak)
+ 8  | Unregistered | Wrong | -   | -      | Invalid | CAPTCHA error first (priority check)
+ 9  | Valid | Wrong x3 | Yes    | No     | Valid   | Account becomes locked after 3 attempts (state change)
+ 10 | Valid | Correct  | No     | Yes    | Valid   | Inactive/Locked as defined (both failing)
+
+Result: 6 core tests cover all rules, and 4 extra tests cover priority and
+interaction. This is far smaller than all 32 combinations while detecting
+logical defects.
+
+
+--------------------------------------------------------------------------
+Q14. A software application is required to accept passwords satisfying
+     the following conditions:
+       - Minimum 8 characters         - Maximum 20 characters
+       - At least one uppercase letter - At least one lowercase letter
+       - At least one digit            - At least one special character
+     Develop a black-box test suite using Equivalence Partitioning,
+     Boundary Value Analysis, and negative testing. Explain which defects
+     each category of test cases is intended to detect.
+--------------------------------------------------------------------------
+ANSWER:
+
+A. EQUIVALENCE PARTITIONING
+ Length partitions: <8 (invalid), 8-20 (valid), >20 (invalid).
+ Content partitions:
+   - Has uppercase / no uppercase
+   - Has lowercase / no lowercase
+   - Has digit / no digit
+   - Has special / no special
+ Valid class: length 8-20 AND contains all four types.
+
+ TC | Password             | Class tested                | Expected
+ ---|----------------------|-----------------------------|----------
+ EP1| Abcd@1234            | Valid                       | Accepted
+ EP2| Ab@1                 | Length < 8                  | Rejected
+ EP3| Abcdefgh@123456789012345 (24 chars)| Length > 20   | Rejected
+ EP4| abcd@1234            | No uppercase                | Rejected
+ EP5| ABCD@1234            | No lowercase                | Rejected
+ EP6| Abcdef@gh            | No digit                    | Rejected
+ EP7| Abcdef123            | No special character        | Rejected
+
+B. BOUNDARY VALUE ANALYSIS (length)
+ TC  | Password (length)          | Expected
+ ----|----------------------------|----------
+ BV1 | Abc@123 (7)                | Rejected (min - 1)
+ BV2 | Abc@1234 (8)               | Accepted (min)
+ BV3 | Abc@12345 (9)              | Accepted (min + 1)
+ BV4 | 19-char valid password     | Accepted (max - 1)
+ BV5 | 20-char valid password     | Accepted (max)
+ BV6 | 21-char valid password     | Rejected (max + 1)
+ BV7 | Empty (0)                  | Rejected
+ BV8 | 1-char                     | Rejected
+
+C. NEGATIVE TESTING
+ TC  | Input                            | Expected
+ ----|----------------------------------|-----------------------------------
+ N1  | Blank / only spaces              | Rejected
+ N2  | Password with spaces inside      | Per rule (accept/reject consistently)
+ N3  | Only digits (12345678)           | Rejected
+ N4  | Only special chars (@#$%^&*!)    | Rejected
+ N5  | Only letters (AbcdEfgh)          | Rejected
+ N6  | Unicode / emoji (Abc@123😀)      | Handled; no crash
+ N7  | SQL injection ('; DROP TABLE--A1a) | Treated as plain text / rejected, no DB effect
+ N8  | Script tag <script>alert(1)</script> | Not executed
+ N9  | Very long string (10,000 chars)  | Rejected gracefully, no crash/overflow
+ N10 | Common password (Password@123) or same as username | Rejected if policy exists
+ N11 | Null input / missing field       | Error message
+ N12 | Special characters at the start/end, leading/trailing spaces | Handled per rule
+
+D. DEFECTS EACH CATEGORY DETECTS
+ - EP: missing validation of a complete category (e.g., system forgets to
+   check for a digit or special character); wrong error messages; wrong
+   acceptance of invalid classes.
+ - BVA: off-by-one errors in length check (> 8 instead of >= 8, <= 20 vs
+   < 20); wrong constants; max length buffer/database field mismatch
+   (DB column length 15 while rule allows 20 -> truncation).
+ - Negative testing: poor error handling, crashes, security flaws (SQL
+   injection, XSS), buffer overflow with long input, character set and
+   encoding problems, null handling, whitespace handling.
+
+
+--------------------------------------------------------------------------
+Q15. Explain the role of static black-box testing in software development.
+     Select a realistic requirement document for an online shopping
+     system and identify ambiguous, incomplete, contradictory,
+     unverifiable, and missing requirements. Prepare a review checklist
+     that could be used by a testing team before implementation begins.
+--------------------------------------------------------------------------
+ANSWER:
+
+ROLE OF STATIC BLACK-BOX TESTING
+Static black-box testing means examining the specification (SRS, user stories,
+use cases, wireframes) without running any code and without looking at the
+code structure. Testers review the document from the user's/external point of
+view. Its roles:
+ 1. Finds defects at the cheapest stage (before design and coding).
+ 2. Makes requirements clear, complete, consistent and testable.
+ 3. Prevents wrong assumptions from entering design and code.
+ 4. Helps testers understand the product and prepare test cases early.
+ 5. Improves communication among customer, analyst, developer and tester.
+ 6. Reduces rework and later dynamic-testing effort.
+
+SAMPLE REQUIREMENT DOCUMENT (Online Shopping System - excerpt)
+ R1: The system shall allow users to register and log in.
+ R2: The website should load quickly.
+ R3: Users can add products to the cart and pay online.
+ R4: The system shall support most popular payment methods.
+ R5: Orders over Rs. 500 get free shipping. (Elsewhere:) R5b: Free shipping is
+     available only for orders above Rs. 1,000.
+ R6: The system should be user-friendly.
+ R7: Users can return products if they are not satisfied.
+ R8: The system shall send notifications to users when needed.
+ R9: Search should be etc. (incomplete sentence) / Search should show
+     relevant products.
+ R10: The system must be secure and handle a large number of users.
+
+ANALYSIS OF DEFECTS
+
+ 1. AMBIGUOUS
+    - R2 "load quickly": how many seconds? Under what load?
+    - R4 "most popular payment methods": which ones (UPI, cards, wallet, COD)?
+    - R8 "when needed": which events (order placed, shipped, delivered)?
+    - R9 "relevant products": what defines relevance?
+ 2. INCOMPLETE
+    - R1: no password rules, mandatory fields, email verification or
+      forgot-password flow.
+    - R3: no stock check, quantity limits, cart persistence, taxes.
+    - R7: return period, conditions and refund process undefined.
+ 3. CONTRADICTORY
+    - R5 vs R5b: free shipping at Rs. 500 versus Rs. 1,000.
+    - One section says guest checkout allowed; another says login mandatory.
+ 4. UNVERIFIABLE / UNTESTABLE
+    - R6 "user-friendly", R10 "secure" and "large number of users" cannot be
+      measured. Need measurable terms (e.g., "support 10,000 concurrent users
+      with response time < 3 s; passwords hashed with bcrypt").
+ 5. MISSING REQUIREMENTS
+    - Order cancellation and tracking; invoice generation.
+    - Admin functions (add/edit product, manage inventory).
+    - Payment failure and timeout handling.
+    - Data privacy, backup and recovery.
+    - Browser/device compatibility, accessibility, languages.
+    - Coupon/discount handling, wishlist, reviews, address management.
+    - Error messages and audit logging.
+
+REVIEW CHECKLIST FOR TESTING TEAM (before implementation)
+ Completeness
+   [ ] All functional features described (register, login, search, cart,
+       checkout, payment, order tracking, returns, admin)?
+   [ ] Non-functional requirements stated (performance, security,
+       usability, compatibility, availability)?
+   [ ] Error handling and exception flows specified?
+   [ ] Business rules, limits and validations defined?
+   [ ] Interfaces (payment gateway, SMS/email, logistics) described?
+ Clarity
+   [ ] No vague words (fast, easy, many, etc., as needed, user-friendly)?
+   [ ] Each requirement has one clear meaning?
+   [ ] Terms defined in a glossary?
+ Consistency
+   [ ] No conflicting requirements or values (shipping thresholds)?
+   [ ] Same terminology used throughout?
+   [ ] Consistent with other documents (BRS, wireframes, use cases)?
+ Testability
+   [ ] Each requirement measurable/verifiable with pass/fail criteria?
+   [ ] Acceptance criteria defined?
+ Traceability
+   [ ] Unique ID for every requirement?
+   [ ] Traceable to business needs and later to design and test cases?
+ Feasibility and Priority
+   [ ] Technically and financially feasible?
+   [ ] Priority (Must/Should/Could) assigned?
+ Quality of the document
+   [ ] Free from grammatical errors, missing sentences, and duplicates?
+   [ ] Versioned, reviewed and approved by stakeholders?
+   [ ] Assumptions, dependencies and constraints documented?
+
+==========================================================================
+END OF ASSIGNMENT-2
+==========================================================================
