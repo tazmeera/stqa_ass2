@@ -1,12 +1,4 @@
-==========================================================================
-ASSIGNMENT-2: SOFTWARE TESTING AND QUALITY ASSURANCE (MCA 2nd YEAR)
-Course Code: MCA211D
-Topics: Static Testing, Reviews, Black-Box Techniques (EP, BVA, Decision
-        Table, State Transition), Data Testing, Test to Pass/Fail
-==========================================================================
-
-
---------------------------------------------------------------------------
+-------------------------------------------------------------------------
 Q1. A university has developed an Online Examination Management System in
     which students can register for examinations, select subjects, make
     payments, download admit cards, and view results. Develop a complete
@@ -1147,38 +1139,3 @@ ANALYSIS OF DEFECTS
     - Browser/device compatibility, accessibility, languages.
     - Coupon/discount handling, wishlist, reviews, address management.
     - Error messages and audit logging.
-
-REVIEW CHECKLIST FOR TESTING TEAM (before implementation)
- Completeness
-   [ ] All functional features described (register, login, search, cart,
-       checkout, payment, order tracking, returns, admin)?
-   [ ] Non-functional requirements stated (performance, security,
-       usability, compatibility, availability)?
-   [ ] Error handling and exception flows specified?
-   [ ] Business rules, limits and validations defined?
-   [ ] Interfaces (payment gateway, SMS/email, logistics) described?
- Clarity
-   [ ] No vague words (fast, easy, many, etc., as needed, user-friendly)?
-   [ ] Each requirement has one clear meaning?
-   [ ] Terms defined in a glossary?
- Consistency
-   [ ] No conflicting requirements or values (shipping thresholds)?
-   [ ] Same terminology used throughout?
-   [ ] Consistent with other documents (BRS, wireframes, use cases)?
- Testability
-   [ ] Each requirement measurable/verifiable with pass/fail criteria?
-   [ ] Acceptance criteria defined?
- Traceability
-   [ ] Unique ID for every requirement?
-   [ ] Traceable to business needs and later to design and test cases?
- Feasibility and Priority
-   [ ] Technically and financially feasible?
-   [ ] Priority (Must/Should/Could) assigned?
- Quality of the document
-   [ ] Free from grammatical errors, missing sentences, and duplicates?
-   [ ] Versioned, reviewed and approved by stakeholders?
-   [ ] Assumptions, dependencies and constraints documented?
-
-==========================================================================
-END OF ASSIGNMENT-2
-==========================================================================
